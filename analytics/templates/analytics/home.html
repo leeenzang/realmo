@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="text-align: center;">
+    <h2 style="background-color: red;">고객 재방률 높히기 작전</h2> <!-- 빨간색 배경색 추가 -->
+    <h3 style="background-color: #FFD700;">실패는 죽음뿐</h3> <!-- 어두운 노란색 배경색 추가 -->
+    <a href="{% url 'visit:upload_csv' %}" class="btn btn-primary">Upload CSV</a>
+    <a href="{% url 'analytics:revisit_rate' %}" class="btn btn-secondary">30-day Revisit Rate</a>
+</div>
+{% endblock %}

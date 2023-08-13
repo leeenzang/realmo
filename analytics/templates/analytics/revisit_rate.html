@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>30-day Revisit Rate</h2>
+    <p>{{ revisit_rate|floatformat:2 }}%</p>
+</div>
+{% endblock %}
