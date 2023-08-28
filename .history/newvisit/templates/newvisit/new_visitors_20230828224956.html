@@ -12,6 +12,25 @@
 <body>
 <a href="{% url 'home' %}" class="btn btn-primary">메인페이지로</a>
 
+<div class="container mt-5">
+    <h3>월별 신규 방문자 수</h3>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>날짜</th>
+                <th>신규 방문자 수</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visitor in monthly_visitors %}
+            <tr>
+                <td>{{ visitor.year }}년 {{ visitor.month }}월</td>
+                <td>{{ visitor.new_visitors_count }}명</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <div class="container mt-5">
     <h3>월별 신규 방문자 수</h3>
