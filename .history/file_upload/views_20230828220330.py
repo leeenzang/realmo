@@ -19,19 +19,21 @@ def upload_csv(request):
     # 사용자가 폼을 통해 서버로 보냈을때 해당 요청 처리하는 코드
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
-        uploaded_filename = request.FILES['file'].name  # 파일의 이름 가져오기
-
         if form.is_valid():
             # 사용자가 업로드한 CSV 파일 읽고 각 행 데이터 처리해서 Visitor 모델에 저장
             csv_file = TextIOWrapper(request.FILES['file'].file, encoding='utf-8')
             reader = csv.reader(csv_file)
             next(reader)  # 헤더(첫번째 줄) 스킵
+            uploaded_filename = request.FILES['file'].name  # 파일의 이름 가져오기
+
+            visitor.uploaded_filename = uploaded_filename
 
             for row in reader:
                 uid = row[1]
                 datetime_str = row[12]
                 date_obj = datetime.strptime(datetime_str, '%y-%m-%d %H:%M').date()
                 classification = row[6]  
+                date_obj = datetime.strptime(datetime_str, '%y-%m-%d %H:%M').date()
 
                 # Daily update, Visitor 모델에서 신규 필터링
                 daily_new_count = Visitor.objects.filter(사용일=date_obj, 구분__in=['신규카드', '신규현금']).distinct().count()
@@ -44,7 +46,6 @@ def upload_csv(request):
                 # 레코드가 없으면 새로 생성합니다.
                 if not visitor:
                     visitor = Visitor(UID=uid, 사용일=date_obj)
-                    visitor.uploaded_filename = uploaded_filename  # 이 부분을 추가하세요.
 
                 # '신규'가 classification에 포함되면 구분을 업데이트합니다.
                 if '신규' in classification:
@@ -75,8 +76,7 @@ def upload_csv(request):
     else:
         form = UploadFileForm()
         message = ""  # 여기에서 message 변수를 초기화
-        uploaded_filename = ""  # POST가 아닌 경우에는 빈 문자열로 초기화
-
+    
     # 일별 방문자 데이터 가져오기
     three_months_ago = date.today() - timedelta(days=90)
 
@@ -87,4 +87,4 @@ def upload_csv(request):
     daily_visitors_count = Visitor.objects.values('사용일').annotate(visitors_count=Count('UID', distinct=True)).order_by('-사용일')
 
     # 주어진 데이터와 함께 템플릿에 렌더링해서 사용자에게 웹 표시
-    return render(request, 'file_upload/upload.html', {'form': form, 'message': message, 'daily_visitors': daily_visitors_count, 'monthly_visitors': monthly_visitors, 'uploaded_filename': uploaded_filename})
+    return render(request, 'file_upload/upload.html', {'form': form, 'message': message, 'daily_visitors': daily_visitors_count, 'monthly_visitors': monthly_visitors})

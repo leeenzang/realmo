@@ -27,6 +27,8 @@ def upload_csv(request):
             reader = csv.reader(csv_file)
             next(reader)  # 헤더(첫번째 줄) 스킵
 
+            visitor.uploaded_filename = uploaded_filename
+
             for row in reader:
                 uid = row[1]
                 datetime_str = row[12]

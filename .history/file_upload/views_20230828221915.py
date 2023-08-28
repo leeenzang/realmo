@@ -27,6 +27,8 @@ def upload_csv(request):
             reader = csv.reader(csv_file)
             next(reader)  # 헤더(첫번째 줄) 스킵
 
+            visitor.uploaded_filename = uploaded_filename
+
             for row in reader:
                 uid = row[1]
                 datetime_str = row[12]
@@ -44,7 +46,6 @@ def upload_csv(request):
                 # 레코드가 없으면 새로 생성합니다.
                 if not visitor:
                     visitor = Visitor(UID=uid, 사용일=date_obj)
-                    visitor.uploaded_filename = uploaded_filename  # 이 부분을 추가하세요.
 
                 # '신규'가 classification에 포함되면 구분을 업데이트합니다.
                 if '신규' in classification:
