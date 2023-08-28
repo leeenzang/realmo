@@ -8,9 +8,6 @@ from rangefilter.filter import DateRangeFilter
 
 class VisitorAdmin(admin.ModelAdmin):
     list_display = ('UID', '사용일','구분')
-    list_filter = (
-        ('사용일', DateRangeFilter),
-        # 기타 필터들...
-    )
-
+    list_filter = ('사용일',)
+    
 admin.site.register(Visitor, VisitorAdmin)
