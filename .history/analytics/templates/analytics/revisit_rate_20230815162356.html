@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="text-align: center; padding-top: 50px;">
+    <a href="{% url 'analytics:home' %}" class="btn btn-primary">뒤로가기</a>
+
+    <!-- 여기에 기간 선택 폼을 추가 -->
+    <form method="post" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        {{ form.duration.label }}: {{ form.duration }}
+        <input type="submit" value="재계산">
+    </form>
+
+    <h2>재방률은</h2>
+    <p style="font-size: 24px; font-weight: bold; color: #FFD700; background-color: red; padding: 10px; border-radius: 5px;">{{ revisit_rate|floatformat:2 }}%</p>
+</div>
+{% endblock %}

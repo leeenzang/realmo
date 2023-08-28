@@ -1,0 +1,29 @@
+<div class="container mt-5">
+    <h2>월별 방문자 수</h2>
+    
+    {% for month, entries in monthly_visitors.items %}
+    <div class="my-3">
+        <button class="btn btn-primary w-100" type="button" data-toggle="collapse" data-target="#{{ month }}" aria-expanded="false" aria-controls="{{ month }}">
+            {{ month }}월 전체 방문자 수: {{ entries|length }}
+        </button>
+        <div class="collapse" id="{{ month }}">
+            <table class="table table-bordered table-hover mt-2">
+                <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>방문자 수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.사용일 }}</td>
+                        <td>{{ entry.visitors_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일 업로드 및 일별 방문자 수</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<a href="{% url 'home' %}" class="btn btn-primary">메인페이지로</a>
+
+<div class="container mt-5">
+    <h2>파일 업로드</h2>
+    <form action="{% url 'visit:upload_csv' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">업로드</button>
+    </form>
+</div>
+
+<div class="container mt-5">
+    <h3>일별 방문자 수</h3>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>날짜</th>
+                <th>방문자 수</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in daily_visitors %}
+            <tr>
+                <td>{{ entry.사용일 }}</td>
+                <td>{{ entry.new_visitors_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 페이지가 로드될 때 실행되는 함수
+    window.onload = function() {
+        // 서버에서 전달받은 메시지가 있다면
+        var message = "{{ message }}";
+        if (message) {
+            alert(message);  // 팝업 알림으로 메시지 표시
+        }
+    }
+</script>
+
+</body>
+</html>

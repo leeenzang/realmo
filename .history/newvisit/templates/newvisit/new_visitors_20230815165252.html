@@ -1,0 +1,19 @@
+<canvas id="newVisitorChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('newVisitorChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['신규 방문자'],
+            datasets: [{
+                label: '방문자 수',
+                data: [{{ new_visitors }}],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+</script>
+<a href="{% url 'analytics:home' %}" class="btn btn-primary">뒤로가기</a>

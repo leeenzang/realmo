@@ -1,0 +1,17 @@
+{% load static %}
+
+{% block content %}
+    <h2>일별 신규 방문자 수</h2>
+    <ul>
+        {% for visitor in daily_visitors %}
+            <li>{{ visitor.date }}: {{ visitor.new_visitors_count }}명</li>
+        {% endfor %}
+    </ul>
+
+    <h2>월별 신규 방문자 수</h2>
+    <ul>
+        {% for visitor in monthly_visitors %}
+            <li>{{ visitor.year }}년 {{ visitor.month }}월: {{ visitor.new_visitors_count }}명</li>
+    </ul>
+
+{% endblock %}

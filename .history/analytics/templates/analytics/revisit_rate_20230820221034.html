@@ -1,0 +1,19 @@
+
+{% block content %}
+    <h2>재방문률 분석</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.duration.label }}: {{ form.duration }}
+        </div>
+        <input type="submit" value="분석 시작" class="btn btn-primary">
+    </form>
+
+    {% if revisit_rate %}
+    <hr>
+    <h3>결과</h3>
+    <p>선택한 기간 동안의 재방문률: {{ revisit_rate|floatformat:2 }}%</p>
+    {% endif %}
+
+{% endblock %}

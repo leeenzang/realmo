@@ -1,0 +1,23 @@
+{% load static %}
+
+{% block content %}
+<div class="container" style="text-align: center;">
+
+    <!-- Top-left Image -->
+    <div style="position: absolute; top: 0; left: 0;">
+        <img src="{% static 'images/wash.png' %}" alt="My Image" width="150px" height="100px">
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav style="text-align: right;">
+        <ul style="list-style-type: none; display: inline-flex; padding: 0;">
+            <li style="margin: 0 15px;"><a href="{% url 'visit:upload_csv' %}">FileUpload</a></li>
+            <li style="margin: 0 15px;"><a href="{% url 'analytics:revisit_rate' %}">Revisit</a></li>
+            <li style="margin: 0 15px;"><a href="{% url 'newvisit:new_visitors' %}">NewVisit</a></li>
+        </ul>
+    </nav>
+
+    <h2 style="background-color: red;">고객 재방률 높히기 작전</h2>
+    <h3 style="background-color: #FFD700;">실패는 죽음뿐</h3>
+</div>
+{% endblock %}
