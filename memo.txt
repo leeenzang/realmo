@@ -1,6 +1,0 @@
-
-패키지 현재 버전 저장
-pip freeze > requirements.txt
-
-패키지 다운 받기
-pip install -r requirements.txt
