@@ -1,0 +1,14 @@
+@ 가상환경 작동하기
+venv2\Scripts\activate
+
+@ 웹 실행하기
+python manage.py runserver  (터미널에서)
+-> 8000 으로 끝나는 링크 컨트롤 누르고 클릭
+-> url 끝에 /mainpage/ 
+!! 앞에 (venv2) 있는지 확인
+
+@ 기능 업뎃 가져오기 
+git stash
+git pull origin main
+git checkout stash -- db.sqlite
+

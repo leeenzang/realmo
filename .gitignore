@@ -1,0 +1,27 @@
+# Python related
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.db
+*.log
+*.pot
+*.pid
+*.env
+
+# Django related
+*.sqlite3
+db.sqlite3
+
+# Virtual environment
+venv/
+my_env/
+ENV/
+.history/
+memo.txt/
+
+
+# IDE related (PyCharm, VSCode, etc.)
+.idea/
+.vscode/
+*.swp
