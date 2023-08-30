@@ -1,21 +1,73 @@
-
 {% block content %}
-<a href="{% url 'home' %}" class="btn btn-primary">메인페이지로</a>
+{% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <h2>재방문률 분석</h2>
-    
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.duration.label }}: {{ form.duration }}
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        /* 분석 시작 버튼 색깔 변경 */
+        .btn-analyze {
+            background-color: rgb(240, 201, 23);
+            color: #FFFFFF;
+            border: none;
+        }
+
+        .btn-analyze:hover {
+            background-color: rgb(215, 181, 0); /* 마우스 오버 시 약간 어두운 색으로 */
+        }
+    </style>
+
+    <div class="container mt-5">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/reply_FILL0.png' %}" alt="메인페이지로" class="mb-3">
+        </a>
+
+        <h2>재방문률 분석</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.duration.label }}: {{ form.duration }}
+            </div>
+            <input type="submit" value="분석 시작" class="btn btn-analyze mb-3">
+        </form>
+
+        {% if revisit_rate %}
+        <hr>
+        <h3 class="mt-3">결과</h3>
+        <p>선택한 기간 동안의 재방문률: {{ revisit_rate|floatformat:2 }}%</p>
+
+        <!-- 원형 그래프 캔버스 추가 -->
+        <div class="d-flex justify-content-center">
+            <canvas id="revisitChart" width="300" height="300"></canvas>
         </div>
-        <input type="submit" value="분석 시작" class="btn btn-primary">
-    </form>
 
-    {% if revisit_rate %}
-    <hr>
-    <h3>결과</h3>
-    <p>선택한 기간 동안의 재방문률: {{ revisit_rate|floatformat:2 }}%</p>
-    {% endif %}
+        <script>
+            let ctx = document.getElementById('revisitChart').getContext('2d');
+            let chart = new Chart(ctx, {
+                type: 'pie',  // 원형 그래프를 생성
+                data: {
+                    labels: ['재방문', '그냥 사람'],
+                    datasets: [{
+                        label: '재방문률',
+                        data: [{{ revisit_rate }}, 100-{{ revisit_rate }}],
+                        backgroundColor: ['rgb(240, 201, 23)', 'rgb(30, 30, 30)']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        </script>
 
+        {% endif %}
+    </div>
 {% endblock %}
