@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Visitor, DailyVisitorCount
+from .models import Visitor
 
 from datetime import datetime, timedelta
 from django.contrib.admin import SimpleListFilter
@@ -7,14 +7,13 @@ from rangefilter.filter import DateRangeFilter
 from django.utils.translation import gettext_lazy as _
 
 
-    
 class NewVisitorFilter(SimpleListFilter):
-    title = _('신규')  # Dropdown title
+    title = _('신규 방문자')  # Dropdown title
     parameter_name = '신규'  # URL parameter name
 
     def lookups(self, request, model_admin):
         return (
-            ('신규', _('신규만 보기')),  # This will show in dropdown menu
+            ('신규', _('신규 포함')),  # This will show in dropdown menu
         )
 
     def queryset(self, request, queryset):
@@ -24,18 +23,10 @@ class NewVisitorFilter(SimpleListFilter):
 
 class VisitorAdmin(admin.ModelAdmin):
     list_display = ('UID', '사용일','구분')
-    
-
     list_filter = (
         ('사용일', DateRangeFilter),
-        NewVisitorFilter,
+        NewVisitorFilter,  # Add the new filter here
+        # 기타 필터들...
     )
-    ordering = ['-사용일']
-
-
-@admin.register(DailyVisitorCount)
-class DailyVisitorsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'count']
-
 
 admin.site.register(Visitor, VisitorAdmin)

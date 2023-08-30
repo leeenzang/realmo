@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Visitor, DailyVisitorCount
+from .models import Visitor
+from .views import upload_csv
 
 from datetime import datetime, timedelta
 from django.contrib.admin import SimpleListFilter
@@ -7,6 +8,9 @@ from rangefilter.filter import DateRangeFilter
 from django.utils.translation import gettext_lazy as _
 
 
+@admin.register(upload_csv)
+class DailyNewVisitorsAdmin(admin.ModelAdmin):
+    list_display = ['date', 'daily_visitors_count']
     
 class NewVisitorFilter(SimpleListFilter):
     title = _('신규')  # Dropdown title
@@ -24,18 +28,10 @@ class NewVisitorFilter(SimpleListFilter):
 
 class VisitorAdmin(admin.ModelAdmin):
     list_display = ('UID', '사용일','구분')
-    
-
     list_filter = (
         ('사용일', DateRangeFilter),
         NewVisitorFilter,
     )
     ordering = ['-사용일']
-
-
-@admin.register(DailyVisitorCount)
-class DailyVisitorsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'count']
-
 
 admin.site.register(Visitor, VisitorAdmin)

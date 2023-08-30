@@ -36,52 +36,36 @@
     </div>
 
 
-
     <div class="container mt-5">
         <h3>월별 방문자 수</h3>
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>날짜</th>
-                    <th>방문자 수</th>
-                    <th>일별</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for month in monthly_visitors %}
-                <tr>
-                    <td>{{ month.year }}년 {{ month.month }}월</td>
-                    <td>{{ month.visitors_count }}명</td>
-                    <td><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#month-{{ month.year }}-{{ month.month }}" aria-expanded="true">
-                        상세보기
-                    </button></td>
-                </tr>
-                <tr class="collapse" id="month-{{ month.year }}-{{ month.month }}">
-                    <td colspan="3">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>날짜</th>
-                                    <th>방문자 수</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for entry in month.daily_data %}
-                                    <tr>
-                                        <td>{{ entry.date }}</td>
-                                        <td>{{ entry.count }}명</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% for month in monthly_visitors %}
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#month-{{month.year}}-{{month.month}}" aria-expanded="true">
+            {{ month.year }}년 {{ month.month }}월 (방문자 수: {{ month.visitors_count }})
+        </button>
+    
+        <div id="month-{{month.year}}-{{month.month}}" class="collapse">
+            <table class="table table-bordered table-hover mt-2">
+                <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>방문자 수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in daily_visitors %}
+                    {% if entry.사용일|date:"Y-m" == month.year|stringformat:"s" + "-" + month.month|stringformat:"s" %}
+                    <tr>
+                        <td>{{ entry.사용일 }}</td>
+                        <td>{{ entry.visitors_count }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
     </div>
     
-
 
 <script>
     // 페이지가 로드될 때 실행되는 함수

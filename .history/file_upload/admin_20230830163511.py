@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Visitor, DailyVisitorCount
+from .models import Visitor
 
 from datetime import datetime, timedelta
 from django.contrib.admin import SimpleListFilter
@@ -23,19 +23,18 @@ class NewVisitorFilter(SimpleListFilter):
             return queryset.filter(구분__icontains='신규')
 
 class VisitorAdmin(admin.ModelAdmin):
-    list_display = ('UID', '사용일','구분')
+    list_display = ('UID', '사용일','구분','daily_visitors_count')
     
+    def daily_visitors_count(self, obj):
+        return Visitor.objects.filter(사용일=obj.사용일).values("UID").distinct().count()
+
+    daily_visitors_count.short_description = '일별 방문자 수'
+
 
     list_filter = (
         ('사용일', DateRangeFilter),
         NewVisitorFilter,
     )
     ordering = ['-사용일']
-
-
-@admin.register(DailyVisitorCount)
-class DailyVisitorsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'count']
-
 
 admin.site.register(Visitor, VisitorAdmin)

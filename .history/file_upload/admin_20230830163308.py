@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Visitor, DailyVisitorCount
-
+from .models import Visitor
+from .views import upload_csv
 from datetime import datetime, timedelta
 from django.contrib.admin import SimpleListFilter
 from rangefilter.filter import DateRangeFilter
@@ -23,19 +23,11 @@ class NewVisitorFilter(SimpleListFilter):
             return queryset.filter(구분__icontains='신규')
 
 class VisitorAdmin(admin.ModelAdmin):
-    list_display = ('UID', '사용일','구분')
-    
-
+    list_display = ('UID', '사용일','구분','daily_visitors_count')
     list_filter = (
         ('사용일', DateRangeFilter),
         NewVisitorFilter,
     )
     ordering = ['-사용일']
-
-
-@admin.register(DailyVisitorCount)
-class DailyVisitorsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'count']
-
 
 admin.site.register(Visitor, VisitorAdmin)

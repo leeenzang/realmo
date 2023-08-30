@@ -35,7 +35,7 @@ class VisitorAdmin(admin.ModelAdmin):
 
 @admin.register(DailyVisitorCount)
 class DailyVisitorsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'count']
+    list_display = ['date', 'new_visitors_count']
 
 
 admin.site.register(Visitor, VisitorAdmin)

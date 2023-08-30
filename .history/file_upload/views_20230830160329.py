@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Visitor, DailyVisitorCount
+from .models import Visitor
 from .forms import UploadFileForm
 from datetime import datetime, timedelta, date
 import csv
@@ -12,11 +12,26 @@ from django.db.models.functions import ExtractMonth, ExtractYear
 
 # Create your views here.
 
+# 일별 신규 방문자 수 갱신
+def update_daily_new_visitors():
+    dates = Visitor.objects.values_list('사용일', flat=True).distinct()
+    for d in dates:
+        daily_new_count = Visitor.objects.filter(사용일=d, 구분__in=['신규카드', '신규현금']).distinct().count()
+        DailyNewVisitors.objects.update_or_create(date=d, defaults={'new_visitors_count': daily_new_count})
+
+# 월별 신규 방문자 수 갱신
+def update_monthly_new_visitors():
+    dates = DailyNewVisitors.objects.values_list('date', flat=True).distinct()
+    for d in dates:
+        year, month = d.year, d.month
+        monthly_new_count = DailyNewVisitors.objects.filter(date__year=year, date__month=month).aggregate(Sum('new_visitors_count'))['new_visitors_count__sum'] or 0
+        MonthlyNewVisitors.objects.update_or_create(year=year, month=month, defaults={'new_visitors_count': monthly_new_count})
+
 
 
 # 사용자가 웹에 접근할때 호출
 def upload_csv(request):
-
+    dates_to_update = set()
     # 사용자가 폼을 통해 서버로 보냈을때 해당 요청 처리하는 코드
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -33,10 +48,9 @@ def upload_csv(request):
                 datetime_str = row[12]
                 date_obj = datetime.strptime(datetime_str, '%y-%m-%d %H:%M').date()
                 classification = row[6]  
-
-                # Daily update, Visitor 모델에서 신규 필터링
-                daily_new_count = Visitor.objects.filter(사용일=date_obj, 구분__in=['신규카드', '신규현금']).distinct().count()
-                DailyNewVisitors.objects.update_or_create(date=date_obj, defaults={'new_visitors_count': daily_new_count})
+                
+                # 해당 날짜를 업데이트할 목록에 추가
+                dates_to_update.add(date_obj)
 
                 # 기존의 레코드를 찾습니다.
                 visitor = Visitor.objects.filter(UID=uid, 사용일=date_obj).first()
@@ -53,14 +67,15 @@ def upload_csv(request):
                 # 변경사항을 저장합니다.
                 visitor.save()
                 
-            # 해당 날짜에서 월 정보 추출
-            upload_month = date_obj.month
-            upload_year = date_obj.year
 
+            # 현재 날짜 및 달 계산
+            today = datetime.today().date()
+            current_month = today.month
+            current_year = today.year
 
-            # Monthly update, 데일리 이용해서 해당 월의 신규 수 합계 계산
-            monthly_new_count = DailyNewVisitors.objects.filter(date__year=upload_year, date__month=upload_month).aggregate(Sum('new_visitors_count'))['new_visitors_count__sum'] or 0
-            MonthlyNewVisitors.objects.update_or_create(year=upload_year, month=upload_month, defaults={'new_visitors_count': monthly_new_count})
+            # Monthly update, 데일리 이용해서 신규 수 합계 계산
+            monthly_new_count = DailyNewVisitors.objects.filter(date__year=current_year, date__month=current_month).aggregate(Sum('new_visitors_count'))['new_visitors_count__sum'] or 0
+            MonthlyNewVisitors.objects.update_or_create(year=current_year, month=current_month, defaults={'new_visitors_count': monthly_new_count})
 
             message = "업로드가 성공적으로 완료되었습니다!"  # 성공 메시지 설정
         else:
@@ -78,12 +93,8 @@ def upload_csv(request):
     # 월별 방문자 데이터 가져오기
     monthly_visitors = Visitor.objects.values(month=ExtractMonth('사용일'), year=ExtractYear('사용일')).annotate(visitors_count=Count('UID', distinct=True)).order_by('-year', '-month')
 
-    # 각 월별 방문자 데이터에 해당 월의 일별 방문자 데이터 추가하기
-    for month in monthly_visitors:
-        month['daily_data'] = DailyVisitorCount.objects.filter(date__year=month['year'], date__month=month['month'])
-
     # 이 부분에서 일별 전체 방문자 수를 계산
-    daily_visitors = DailyVisitorCount.objects.all()
+    daily_visitors_count = Visitor.objects.values('사용일').annotate(visitors_count=Count('UID', distinct=True)).order_by('-사용일')
 
     # 주어진 데이터와 함께 템플릿에 렌더링해서 사용자에게 웹 표시
-    return render(request, 'file_upload/upload.html', {'form': form, 'message': message, 'daily_visitors': daily_visitors, 'monthly_visitors': monthly_visitors, 'uploaded_filename': uploaded_filename})
+    return render(request, 'file_upload/upload.html', {'form': form, 'message': message, 'daily_visitors': daily_visitors_count, 'monthly_visitors': monthly_visitors, 'uploaded_filename': uploaded_filename})

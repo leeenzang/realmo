@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Visitor, DailyVisitorCount
+from .models import Visitor
 from .forms import UploadFileForm
 from datetime import datetime, timedelta, date
 import csv
@@ -78,12 +78,8 @@ def upload_csv(request):
     # 월별 방문자 데이터 가져오기
     monthly_visitors = Visitor.objects.values(month=ExtractMonth('사용일'), year=ExtractYear('사용일')).annotate(visitors_count=Count('UID', distinct=True)).order_by('-year', '-month')
 
-    # 각 월별 방문자 데이터에 해당 월의 일별 방문자 데이터 추가하기
-    for month in monthly_visitors:
-        month['daily_data'] = DailyVisitorCount.objects.filter(date__year=month['year'], date__month=month['month'])
-
     # 이 부분에서 일별 전체 방문자 수를 계산
-    daily_visitors = DailyVisitorCount.objects.all()
+    daily_visitors_count = Visitor.objects.values('사용일').annotate(visitors_count=Count('UID', distinct=True)).order_by('-사용일')
 
     # 주어진 데이터와 함께 템플릿에 렌더링해서 사용자에게 웹 표시
-    return render(request, 'file_upload/upload.html', {'form': form, 'message': message, 'daily_visitors': daily_visitors, 'monthly_visitors': monthly_visitors, 'uploaded_filename': uploaded_filename})
+    return render(request, 'file_upload/upload.html', {'form': form, 'message': message, 'daily_visitors': daily_visitors_count, 'monthly_visitors': monthly_visitors, 'uploaded_filename': uploaded_filename, 'daily_visitors_count':daily_visitors_count})

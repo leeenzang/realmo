@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Visitor, DailyVisitorCount
+from .models import Visitor
 
 from datetime import datetime, timedelta
 from django.contrib.admin import SimpleListFilter
@@ -31,11 +31,5 @@ class VisitorAdmin(admin.ModelAdmin):
         NewVisitorFilter,
     )
     ordering = ['-사용일']
-
-
-@admin.register(DailyVisitorCount)
-class DailyVisitorsAdmin(admin.ModelAdmin):
-    list_display = ['date', 'count']
-
 
 admin.site.register(Visitor, VisitorAdmin)

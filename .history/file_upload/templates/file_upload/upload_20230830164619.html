@@ -66,11 +66,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for entry in month.daily_data %}
+                                {% for entry in daily_visitors %}
+                                {% if entry.date|date:"Y" == month.year|date:"Y" and entry.사용일|date:"m" == month.month|date:"m" %}
                                     <tr>
                                         <td>{{ entry.date }}</td>
                                         <td>{{ entry.count }}명</td>
                                     </tr>
+                                {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>

@@ -18,3 +18,4 @@ def new_visitors_summary(request):
     }
     return render(request, 'newvisit/new_visitors.html', context)
 
+print(monthly_visitors)

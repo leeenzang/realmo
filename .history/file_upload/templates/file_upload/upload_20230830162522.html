@@ -35,8 +35,6 @@
         </div>
     </div>
 
-
-
     <div class="container mt-5">
         <h3>월별 방문자 수</h3>
         <table class="table table-bordered table-hover">
@@ -66,11 +64,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for entry in month.daily_data %}
+                                {% for entry in daily_visitors %}
+                                {% if entry.사용일|date:"Y" == month.year|date:"Y" and entry.사용일|date:"m" == month.month|date:"m" %}
                                     <tr>
-                                        <td>{{ entry.date }}</td>
-                                        <td>{{ entry.count }}명</td>
+                                        <td>{{ entry.사용일 }}</td>
+                                        <td>{{ entry.visitors_count }}명</td>
                                     </tr>
+                                {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>
