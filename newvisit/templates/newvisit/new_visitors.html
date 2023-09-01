@@ -20,6 +20,10 @@
         margin-bottom: 25px;
     }
     
+    .table-header-color {
+        background-color: rgb(240, 201, 23);
+    }    
+    
 </style>
 
 <body>
@@ -33,7 +37,7 @@
     <h3>월별 신규 방문자 수</h3>
     <table class="table table-bordered table-hover">
         <thead>
-            <tr>
+            <tr class="table-header-color">
                 <th>날짜</th>
                 <th>신규 방문자 수</th>
                 <th>일별</th>
@@ -44,8 +48,8 @@
             <tr>
                 <td>{{ visitor.year }}년 {{ visitor.month }}월</td>
                 <td>{{ visitor.new_visitors_count }}명</td>
-                <td><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#month-{{ visitor.year }}-{{ visitor.month }}" aria-expanded="true">
-                    상세보기
+                <td><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#month-{{ visitor.year }}-{{ visitor.month }}" aria-expanded="true" style="color: rgb(240, 201, 23);">
+                    Click!  
                 </button></td>
             </tr>
             <tr class="collapse" id="month-{{ visitor.year }}-{{ visitor.month }}">
@@ -60,7 +64,7 @@
                         <tbody>
                             {% for daily in visitor.daily_data %}
                                 <tr>
-                                    <td>{{ daily.date }}</td>
+                                </tr><td>{{ daily.date|date:"j일, l" }}</td>
                                     <td>{{ daily.new_visitors_count }}명</td>
                                 </tr>
                             {% endfor %}

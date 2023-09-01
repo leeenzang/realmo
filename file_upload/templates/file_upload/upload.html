@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,6 +31,14 @@
     .custom-upload-btn:hover {
         background-color: rgb(215, 181, 0); /* 마우스 오버 시 약간 어두운 색으로 */
     }
+
+    .table-header-color {
+        background-color: rgb(240, 201, 23);
+    }    
+
+    .custom-btn-color {
+        color: rgb(240, 201, 23);
+    }    
     
 </style>
 
@@ -69,7 +78,7 @@
         <h4>월별 방문자 수</h4>
         <table class="table table-bordered table-hover">
             <thead>
-                <tr>
+                <tr class="table-header-color">
                     <th>날짜</th>
                     <th>방문자 수</th>
                     <th>일별</th>
@@ -80,8 +89,8 @@
                 <tr>
                     <td>{{ month.year }}년 {{ month.month }}월</td>
                     <td>{{ month.visitors_count }}명</td>
-                    <td><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#month-{{ month.year }}-{{ month.month }}" aria-expanded="true">
-                        상세보기
+                    <td><button class="btn btn-link custom-btn-color" type="button" data-toggle="collapse" data-target="#month-{{ month.year }}-{{ month.month }}" aria-expanded="true">
+                        Click!
                     </button></td>
                 </tr>
                 <tr class="collapse" id="month-{{ month.year }}-{{ month.month }}">
@@ -96,7 +105,7 @@
                             <tbody>
                                 {% for entry in month.daily_data %}
                                     <tr>
-                                        <td>{{ entry.date }}</td>
+                                        <td>{{ entry.date|date:"j일, l" }}</td>
                                         <td>{{ entry.count }}명</td>
                                     </tr>
                                 {% endfor %}
